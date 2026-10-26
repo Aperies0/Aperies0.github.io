@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lior Handlarsky · SOC Analyst</title>
+<meta name="description" content="Lior Handlarsky, SOC analyst. Real-world incident investigation, blue-team training, and offensive security tooling.">
+<meta property="og:title" content="Lior Handlarsky · SOC Analyst">
+<meta property="og:description" content="Real-world incident investigation, blue-team training, and offensive security tooling.">
+<meta name="theme-color" content="#0c1110">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: single column, 1080px measure. Hero → case file (signature) → strengths → projects → labs → path → contact. */
+:root{
+  --bg:#0c1110;        /* green-biased near-black */
+  --surface:#121917;
+  --surface-2:#172019;
+  --line:#22302a;
+  --fg:#dfe8e3;
+  --muted:#8d9d96;
+  --faint:#5f6f68;
+  --accent:#5fd38d;    /* signal green */
+  --accent-dim:rgba(95,211,141,.12);
+  --sev:#e3b25a;       /* severity amber */
+  --sev-dim:rgba(227,178,90,.12);
+
+  --display:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+
+  --measure:1080px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.6;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:56px 56px;background-position:-1px -1px;background-attachment:fixed}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,transparent 0%,var(--bg) 70%)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+::selection{background:var(--accent);color:var(--bg)}
+.wrap{max-width:var(--measure);margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.mono{font-family:var(--mono)}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:10;background:rgba(12,17,16,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.bar .wrap{display:flex;align-items:center;gap:24px;height:56px}
+.bar .id{font-family:var(--mono);font-size:13px;color:var(--muted);text-decoration:none;white-space:nowrap}
+.bar .id b{color:var(--fg);font-weight:500}
+.bar nav{display:flex;gap:20px;margin-left:auto}
+.bar nav a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s}
+.bar nav a:hover{color:var(--fg)}
+.bar .cv{font-size:14px;font-weight:500;text-decoration:none;border:1px solid var(--accent);color:var(--accent);padding:6px 14px;border-radius:6px;transition:background .15s,color .15s;white-space:nowrap}
+.bar .cv:hover{background:var(--accent);color:var(--bg)}
+
+/* hero */
+.hero{padding-block:96px 72px}
+.status{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:13px;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(95,211,141,.3);padding:6px 12px;border-radius:999px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(95,211,141,.6);animation:ping 2.4s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(95,211,141,.55)}70%{box-shadow:0 0 0 9px rgba(95,211,141,0)}100%{box-shadow:0 0 0 0 rgba(95,211,141,0)}}
+.hero h1{font-family:var(--display);font-weight:700;font-size:clamp(52px,10.5vw,124px);line-height:.92;letter-spacing:-.02em;margin:28px 0 0;text-transform:uppercase}
+.hero h1 .cur{display:inline-block;width:.42em;height:.08em;background:var(--accent);margin-left:.08em;vertical-align:baseline;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.role{font-family:var(--display);font-weight:500;font-size:clamp(22px,3vw,30px);color:var(--muted);margin:18px 0 0;letter-spacing:.01em}
+.role b{color:var(--fg);font-weight:600}
+.lede{max-width:62ch;margin:24px 0 0;font-size:18px;color:var(--fg)}
+.lede span{color:var(--muted)}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:36px}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 20px;border-radius:8px;font-weight:500;font-size:15px;text-decoration:none;border:1px solid var(--line);background:var(--surface);transition:border-color .15s,background .15s,transform .15s}
+.btn:hover{border-color:var(--faint)}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#0a1a10}
+.btn.primary:hover{background:#7ce0a3;border-color:#7ce0a3}
+.btn svg{width:17px;height:17px;flex:none}
+.facts{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:44px;padding-top:24px;border-top:1px solid var(--line);font-family:var(--mono);font-size:13px;color:var(--muted)}
+.facts span::before{content:"› ";color:var(--accent)}
+
+/* sections */
+section{padding-block:72px;border-top:1px solid var(--line)}
+.eyebrow{font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:.04em;margin:0 0 10px}
+h2{font-family:var(--display);font-weight:600;font-size:clamp(30px,4.4vw,44px);line-height:1.05;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.intro{color:var(--muted);max-width:60ch;margin:14px 0 0}
+
+/* case file (signature) */
+.case{margin-top:36px;border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.case-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:16px 20px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.case-id{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.case-title{font-family:var(--display);font-weight:600;font-size:20px;margin-right:auto}
+.tag{font-family:var(--mono);font-size:12px;padding:3px 9px;border-radius:4px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.sev{color:var(--sev);border-color:rgba(227,178,90,.4);background:var(--sev-dim)}
+.tag.ok{color:var(--accent);border-color:rgba(95,211,141,.35);background:var(--accent-dim)}
+.case-body{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+.tl{list-style:none;margin:0;padding:8px 20px 20px;position:relative}
+.tl li{display:grid;grid-template-columns:96px minmax(0,1fr);gap:16px;padding:14px 0;border-bottom:1px dashed var(--line)}
+.tl li:last-child{border-bottom:0}
+.tl .ph{font-family:var(--mono);font-size:12px;color:var(--accent);padding-top:3px;text-transform:uppercase;letter-spacing:.05em}
+.tl h3{margin:0;font-size:16px;font-weight:600}
+.tl p{margin:4px 0 0;color:var(--muted);font-size:15px}
+.tl li.key h3{color:var(--accent)}
+.side{border-left:1px solid var(--line);padding:20px;display:grid;gap:22px;align-content:start;background:rgba(0,0,0,.12)}
+.kv{display:grid;gap:12px;margin:0}
+.kv div{display:grid;gap:2px}
+.kv dt{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint)}
+.kv dd{margin:0;font-size:14.5px}
+.kv dd s{color:var(--faint)}
+.iocs{font-family:var(--mono);font-size:12.5px;border:1px solid var(--line);border-radius:8px;background:var(--bg);overflow:hidden}
+.iocs .h{padding:8px 12px;border-bottom:1px solid var(--line);color:var(--muted);display:flex;justify-content:space-between}
+.iocs .row{display:grid;grid-template-columns:72px minmax(0,1fr);gap:10px;padding:7px 12px;border-bottom:1px solid var(--line)}
+.iocs .row:last-child{border-bottom:0}
+.iocs .t{color:var(--faint)}
+.red{color:var(--fg);overflow-wrap:anywhere}
+.red i{font-style:normal;color:var(--muted);letter-spacing:-.05em}
+.case-foot{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;padding:14px 20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+.link{color:var(--accent);text-decoration:none;font-weight:500;display:inline-flex;gap:6px;align-items:center}
+.link:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* strengths */
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:36px}
+.trio > div{background:var(--surface);padding:24px}
+.trio h3{font-family:var(--display);font-weight:600;font-size:21px;margin:0 0 8px}
+.trio p{margin:0;color:var(--muted);font-size:15px}
+.skills{margin-top:28px;display:grid;gap:0;border-top:1px solid var(--line)}
+.skills div{display:grid;grid-template-columns:180px minmax(0,1fr);gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.skills dt{font-family:var(--mono);font-size:13px;color:var(--muted);padding-top:2px}
+.skills dd{margin:0;font-size:15px}
+
+/* projects */
+.proj{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:16px}
+.card{display:flex;flex-direction:column;gap:12px;padding:22px;border:1px solid var(--line);border-radius:12px;background:var(--surface);text-decoration:none;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.card .nm{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--fg)}
+.card .nm em{font-style:normal;color:var(--accent)}
+.card p{margin:0;color:var(--muted);font-size:15px;flex:1}
+.card .tags{display:flex;flex-wrap:wrap;gap:6px}
+.card .go{font-size:14px;color:var(--accent);font-weight:500}
+
+/* labs */
+.labs{margin-top:36px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.lab{display:grid;grid-template-columns:200px minmax(0,1fr) auto;gap:16px;align-items:baseline;padding:14px 20px;border-bottom:1px solid var(--line)}
+.lab:last-child{border-bottom:0}
+a.lab{text-decoration:none;transition:background .15s}
+a.lab:hover{background:var(--surface-2)}
+a.lab:hover .p{color:var(--accent)}
+.lab .n{font-weight:600}
+.evidence{margin:0;border-top:1px solid var(--line);padding:20px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px;align-items:center;background:rgba(0,0,0,.12)}
+.evidence img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:8px}
+.evidence figcaption{color:var(--muted);font-size:14.5px;display:grid;gap:6px}
+.evidence figcaption .mono{font-size:12px;color:var(--faint)}
+.feature{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);margin-top:36px;border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.feature-media{background:#0a0e0d;border-right:1px solid var(--line);display:flex;align-items:center}
+.feature-media video{display:block;width:100%;height:auto;max-width:100%}
+.feature-text{padding:24px;display:flex;flex-direction:column;gap:14px;justify-content:center}
+.feature-text .nm{font-family:var(--mono);font-size:22px;font-weight:500}
+.feature-text p{margin:0;color:var(--muted);font-size:15px}
+.feature-text .tags{display:flex;flex-wrap:wrap;gap:6px}
+.proj.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.lab .k{color:var(--muted);font-size:15px}
+.lab .p{font-family:var(--mono);font-size:12px;color:var(--faint)}
+
+/* path */
+.path{list-style:none;margin:36px 0 0;padding:0;position:relative}
+.path::before{content:"";position:absolute;left:111px;top:8px;bottom:8px;width:1px;background:var(--line)}
+.path li{display:grid;grid-template-columns:96px 32px minmax(0,1fr);align-items:start;padding:10px 0}
+.path .yr{font-family:var(--mono);font-size:13px;color:var(--muted);padding-top:3px;font-variant-numeric:tabular-nums;text-align:right}
+.path .nd{width:11px;height:11px;border-radius:50%;background:var(--bg);border:2px solid var(--faint);margin:7px auto 0;position:relative;z-index:1}
+.path li.done .nd{border-color:var(--accent);background:var(--accent)}
+.path li.next .nd{border-color:var(--accent);border-style:dashed}
+.path h3{margin:0;font-size:17px;font-weight:600}
+.path p{margin:2px 0 0;color:var(--muted);font-size:15px}
+
+/* contact */
+.contact{padding-block:88px 96px}
+.contact h2{font-size:clamp(36px,6vw,64px);text-transform:uppercase;font-weight:700}
+.mail{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:28px}
+.mail code{font-family:var(--mono);font-size:clamp(15px,2.4vw,20px);padding:12px 16px;border:1px solid var(--line);border-radius:8px;background:var(--surface);overflow-wrap:anywhere}
+.copy{min-height:46px;padding:0 16px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);font:500 14px var(--sans);cursor:pointer}
+.copy:hover{border-color:var(--faint)}
+.copy.ok{border-color:var(--accent);color:var(--accent)}
+footer{border-top:1px solid var(--line);padding-block:24px calc(24px + env(safe-area-inset-bottom,0px));font-family:var(--mono);font-size:12px;color:var(--faint)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
+
+/* load-in */
+.rise{animation:rise .5s cubic-bezier(.16,1,.3,1) both}
+.rise.d1{animation-delay:.06s}.rise.d2{animation-delay:.12s}.rise.d3{animation-delay:.18s}.rise.d4{animation-delay:.24s}.rise.d5{animation-delay:.3s}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* responsive */
+@media (max-width:900px){
+  .case-body{grid-template-columns:minmax(0,1fr)}
+  .side{border-left:0;border-top:1px solid var(--line)}
+  .proj{grid-template-columns:minmax(0,1fr)}
+  .trio{grid-template-columns:minmax(0,1fr)}
+  .feature,.evidence{grid-template-columns:minmax(0,1fr)}
+  .feature-media{border-right:0;border-bottom:1px solid var(--line)}
+  .proj.two{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:640px){
+  .bar nav{display:none}
+  .bar .cv{margin-left:auto}
+  .hero{padding-block:56px 48px}
+  section{padding-block:56px}
+  .tl{padding:4px 16px 16px}
+  .tl li{grid-template-columns:minmax(0,1fr);gap:4px}
+  .case-head,.side,.case-foot{padding-left:16px;padding-right:16px}
+  .skills div{grid-template-columns:minmax(0,1fr);gap:4px}
+  .lab{grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:14px 16px}
+  .lab .k{grid-column:1/-1;grid-row:2}
+  .path::before{left:71px}
+  .path li{grid-template-columns:56px 32px minmax(0,1fr)}
+  .path .yr{font-size:12px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="id" href="#top"><b>lior.handlarsky</b> / soc</a>
+    <nav aria-label="Sections">
+      <a href="#case">Investigation</a>
+      <a href="#projects">Projects</a>
+      <a href="#labs">Labs</a>
+      <a href="#path">Path</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="cv" href="Lior_Handlarsky_SOC_CV.pdf" target="_blank" rel="noopener">CV (PDF)</a>
+  </div>
+</header>
+
+<main id="top">
+
+<div class="wrap hero">
+  <div class="status rise"><span class="dot" aria-hidden="true"></span>Open to SOC analyst roles · shift-ready</div>
+  <h1 class="rise d1">Lior<br>Handlarsky<span class="cur" aria-hidden="true"></span></h1>
+  <p class="role rise d2"><b>SOC Analyst</b> / Blue Team</p>
+  <p class="lede rise d3">I investigated a real phishing and account-takeover attack from first report to final IOC list. <span>Behind that: TryHackMe's SOC Level 1 path, a year of offensive and defensive training at ECOM College, and three years keeping Apache gunships mission-ready in the Israeli Air Force.</span></p>
+  <div class="ctas rise d4">
+    <a class="btn primary" href="Lior_Handlarsky_SOC_CV.pdf" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>
+      Download CV
+    </a>
+    <a class="btn" href="https://www.linkedin.com/in/lior-h-27424b37b/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.1c.5-1 1.8-2 3.8-2 4 0 4.8 2.6 4.8 6V21h-4v-5.2c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8V21h-4z"/></svg>
+      LinkedIn
+    </a>
+    <a class="btn" href="https://github.com/Aperies0" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.6 9.6 0 0 1 5 0c2-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.7.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9V21c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg>
+      GitHub
+    </a>
+    <a class="btn" href="#contact">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+      Email
+    </a>
+  </div>
+  <div class="facts rise d5">
+    <span>TryHackMe SOC Level 1 · completed</span>
+    <span>ECOM College · 2025–2026</span>
+    <span>IAF Apache squadron · 2022–2025</span>
+    <span>Hebrew · English</span>
+  </div>
+</div>
+
+<section id="case">
+  <div class="wrap">
+    <p class="eyebrow">// featured investigation</p>
+    <h2>A live account takeover, worked end to end</h2>
+    <p class="intro">A friend lost about $11,000 in TF2 items to a FACEIT-impersonation phishing operation, followed by a $5,500 crypto ransom demand. I worked it like a SOC case: triage, find the real mechanism, map the attacker's infrastructure, extract IOCs, write the report.</p>
+
+    <article class="case" aria-label="Case file: FACEIT impersonation phishing and Steam account takeover">
+      <div class="case-head">
+        <span class="case-id">CASE-001 · 2026-07-17</span>
+        <span class="case-title">Steam account takeover via FACEIT-impersonation phishing</span>
+        <span class="tag sev">Severity: High</span>
+        <span class="tag ok">Closed · Reported</span>
+      </div>
+      <div class="case-body">
+        <ol class="tl">
+          <li><span class="ph">Alert</span><div><h3>Anomalous session</h3><p>Steam flagged a new session from Orem, US (Chrome on Windows), approved through the victim's own mobile authenticator. Items were traded out within the hour.</p></div></li>
+          <li><span class="ph">Triage</span><div><h3>Reconstruct the attack chain</h3><p>Nine days of catfish rapport-building, then a Discord call that steered the victim to a fake FACEIT "verification" page.</p></div></li>
+          <li><span class="ph">Intercept</span><div><h3>Test it live</h3><p>Walked the phishing flow with a disposable Steam account through Burp Suite and captured the backend requests.</p></div></li>
+          <li class="key"><span class="ph">Identify</span><div><h3>Find the real mechanism</h3><p>The site pulls a genuine Steam QR login token and shows it as its own. Scanning and approving it hands the attacker a fully authenticated session, no password needed. A second path relays typed credentials to Steam's real login API.</p></div></li>
+          <li><span class="ph">OSINT</span><div><h3>Map attacker infrastructure</h3><p>Domain registered 11 days before the attack, behind Cloudflare, with a wildcard cert and IP-based cloaking that serves researchers a 404. A Telegram bot alerts the operator when a target is live. Two level-0 mule accounts held the stolen items.</p></div></li>
+          <li><span class="ph">Report</span><div><h3>Remediate &amp; report</h3><p>Session deauthorization, key revocation and password rotation. Abuse reports to the registrar, Cloudflare, Safe Browsing and IC3.</p></div></li>
+        </ol>
+        <div class="side">
+          <dl class="kv">
+            <div><dt>Attack vector</dt><dd>Steam QR-login relay + live credential relay</dd></div>
+            <div><dt>Initial hypothesis</dt><dd><s>Malicious browser extensions</s> · ruled out. Both were genuine, used as props in the extortion stage.</dd></div>
+            <div><dt>Tooling</dt><dd>Burp Suite, page-source analysis, WHOIS, Steam OSINT</dd></div>
+            <div><dt>MITRE ATT&amp;CK</dt><dd class="mono" style="font-size:12.5px;line-height:1.7">T1566.003 Spearphishing via Service<br>T1656 Impersonation<br>T1557 Adversary-in-the-Middle<br>T1078 Valid Accounts<br>T1583.001 Acquire Infrastructure: Domains<br>T1657 Financial Theft</dd></div>
+          </dl>
+          <div class="iocs" aria-label="Indicators of compromise, defanged">
+            <div class="h"><span>ioc.txt</span><span>defanged</span></div>
+            <div class="row"><span class="t">domain</span><span class="red">twitchuncletopia[.]com</span></div>
+            <div class="row"><span class="t">phish</span><span class="red">hxxps://faceit[.]twitchuncletopia[.]com/</span></div>
+            <div class="row"><span class="t">relay</span><span class="red">POST /&lt;rand&gt;/&lt;rand&gt;/&lt;rand&gt; doqr=1&amp;qrdata=s.team/q/…</span></div>
+            <div class="row"><span class="t">whois</span><span class="red">Trustname.com · created 2026-07-06</span></div>
+            <div class="row"><span class="t">mule</span><span class="red">76561198784702069</span></div>
+            <div class="row"><span class="t">mule</span><span class="red">76561198782859857</span></div>
+            <div class="row"><span class="t">catfish</span><span class="red">76561198114658803</span></div>
+            <div class="row"><span class="t">exfil</span><span class="red">Telegram bot 7563871982:<i>████████</i></span></div>
+          </div>
+        </div>
+      </div>
+      <figure class="evidence">
+        <img src="assets/qr-relay-evidence.webp" width="1008" height="869" loading="lazy" alt="The phishing site at faceit.twitchuncletopia.com showing a fake Steam sign-in window with a QR code served by the attacker's backend">
+        <figcaption><span class="mono">evidence/faceit-scam-5.png</span> Captured during live testing: the fake Steam sign-in popup. The QR code is a real Steam login token requested by the attacker's server.</figcaption>
+      </figure>
+      <div class="case-foot">
+        <span>Full report with timeline, IOCs, evidence and remediation is on GitHub.</span>
+        <a class="link" href="https://github.com/Aperies0/Pentester-Arsenal/blob/main/Writeups/Faceit-Twitchuncletopia-Phishing.md" target="_blank" rel="noopener">Read the incident report →</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section id="strengths">
+  <div class="wrap">
+    <p class="eyebrow">// what I bring to a SOC</p>
+    <h2>Built for the night shift</h2>
+    <div class="trio">
+      <div><h3>Procedure under pressure</h3><p>Three years as an Armament Crew Chief on AH-64 Apaches. Inspections, troubleshooting and mission prep where a skipped step isn't an option.</p></div>
+      <div><h3>Attacker's view of the alert</h3><p>Offensive training in enumeration, privilege escalation and Active Directory attacks. I know what the next step after an alert usually looks like.</p></div>
+      <div><h3>Automates the boring parts</h3><p>Python, Bash and JavaScript tooling of my own. If I do a task twice, I script it the third time.</p></div>
+    </div>
+    <dl class="skills">
+      <div><dt>SOC / Blue team</dt><dd>Log analysis, alert triage, incident response, SIEM &amp; EDR workflows, IOC extraction, phishing &amp; malicious-domain analysis, threat intel, MITRE ATT&amp;CK</dd></div>
+      <div><dt>Network</dt><dd>TCP/IP, DNS, HTTP/HTTPS, traffic analysis &amp; packet inspection</dd></div>
+      <div><dt>Tools</dt><dd>Wireshark, Burp Suite, Nmap, Metasploit, BloodHound, Hashcat, John the Ripper</dd></div>
+      <div><dt>Scripting</dt><dd>Python, Bash, PowerShell, JavaScript, API integrations</dd></div>
+      <div><dt>Systems</dt><dd>Windows Server, Windows 10/11, Active Directory, Linux (Kali, Debian)</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <p class="eyebrow">// tools I built</p>
+    <h2>Projects</h2>
+    <p class="intro">Open source, in my Pentester Arsenal repo. Each one started as a problem I kept running into.</p>
+    <div class="feature">
+      <div class="feature-media">
+        <video autoplay muted loop playsinline preload="metadata" poster="assets/lfi2rce-poster.webp" width="1280" height="764" aria-label="lfi2rce running against TryHackMe Dogcat, from parameter detection to a shell">
+          <source src="assets/lfi2rce-demo.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="feature-text">
+        <span class="nm">lfi2rce</span>
+        <p>Python CLI that automates the LFI to RCE chain: detects vulnerable parameters and app quirks, reads source to pull credentials, and poisons logs into an interactive shell. Ships with a wizard mode, man page and installer. Tested on DVWA and TryHackMe Dogcat.</p>
+        <span class="tags"><span class="tag">Python</span><span class="tag">CLI</span><span class="tag">Web exploitation</span></span>
+        <a class="link" href="https://github.com/Aperies0/Pentester-Arsenal/tree/main/Cheatsheets%20%26%20Tools/LFI2RCE" target="_blank" rel="noopener">View on GitHub →</a>
+      </div>
+    </div>
+    <div class="proj two">
+      <a class="card" href="https://github.com/Aperies0/Pentester-Arsenal/tree/main/Cheatsheets%20%26%20Tools/Enum-Handbook" target="_blank" rel="noopener">
+        <span class="nm">ctf<em>::</em>enum v6</span>
+        <p>Findings-driven recon companion. Mark what the scan reveals and service-specific checklists appear, with a sticky loot tracker and saved progress.</p>
+        <span class="tags"><span class="tag">JavaScript</span><span class="tag">Recon</span><span class="tag">Methodology</span></span>
+        <span class="go">View on GitHub →</span>
+      </a>
+      <a class="card" href="https://github.com/Aperies0/Pentester-Arsenal/tree/main/Cheatsheets%20%26%20Tools/Nmapforge" target="_blank" rel="noopener">
+        <span class="nm">nmapforge</span>
+        <p>Visual Nmap command builder with preset scans, custom flag selection and Searchsploit follow-ups. Runs in the browser, no install.</p>
+        <span class="tags"><span class="tag">JavaScript</span><span class="tag">Nmap</span><span class="tag">Tooling</span></span>
+        <span class="go">View on GitHub →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="labs">
+  <div class="wrap">
+    <p class="eyebrow">// hands-on labs</p>
+    <h2>Lab writeups</h2>
+    <p class="intro">Full attack chains, documented step by step. Knowing how these work is how I know what to look for in the logs.</p>
+    <div class="labs">
+      <a class="lab" href="https://github.com/Aperies0/Pentester-Arsenal/blob/main/Writeups/Vulnnet-roasted.md" target="_blank" rel="noopener"><span class="n">VulnNet: Roasted</span><span class="k">AS-REP roasting, Kerberoasting, DCSync</span><span class="p">TryHackMe →</span></a>
+      <a class="lab" href="https://github.com/Aperies0/Pentester-Arsenal/blob/main/Writeups/Attacktive-Directory.md" target="_blank" rel="noopener"><span class="n">Attacktive Directory</span><span class="k">Active Directory enumeration and Kerberos attacks</span><span class="p">TryHackMe →</span></a>
+      <a class="lab" href="https://github.com/Aperies0/Pentester-Arsenal/blob/main/Writeups/Support-TryHackMe-Writeup.md" target="_blank" rel="noopener"><span class="n">Support</span><span class="k">IDOR, forged-cookie access control bypass, LFI, command injection</span><span class="p">TryHackMe →</span></a>
+      <a class="lab" href="https://github.com/Aperies0/Pentester-Arsenal/blob/main/Writeups/Team.md" target="_blank" rel="noopener"><span class="n">Team</span><span class="k">LFI, command injection, privilege escalation</span><span class="p">TryHackMe →</span></a>
+      <a class="lab" href="https://github.com/Aperies0/Pentester-Arsenal/blob/main/Writeups/Blue.md" target="_blank" rel="noopener"><span class="n">Blue</span><span class="k">EternalBlue (MS17-010)</span><span class="p">TryHackMe →</span></a>
+    </div>
+    <p class="intro" style="margin-top:20px"><a class="link" href="https://github.com/Aperies0/Pentester-Arsenal/tree/main/Writeups" target="_blank" rel="noopener">All writeups on GitHub →</a></p>
+  </div>
+</section>
+
+<section id="path">
+  <div class="wrap">
+    <p class="eyebrow">// path</p>
+    <h2>How I got here</h2>
+    <ol class="path">
+      <li class="done"><span class="yr">2022–25</span><span class="nd"></span><div><h3>Armament Crew Chief, Apache Squadron</h3><p>Israeli Air Force. Weapon-system readiness on AH-64 Apaches.</p></div></li>
+      <li class="done"><span class="yr">2025</span><span class="nd"></span><div><h3>Salesperson, Bug Multisystem</h3><p>Matched customers to technology solutions, consistently met targets.</p></div></li>
+      <li class="done"><span class="yr">2025</span><span class="nd"></span><div><h3>TryHackMe SOC Level 1</h3><p>Log analysis, SIEM, EDR, phishing analysis, threat intel, forensics basics.</p></div></li>
+      <li class="done"><span class="yr">2025–26</span><span class="nd"></span><div><h3>Cybersecurity course, ECOM College</h3><p>Offensive and defensive security, hands-on labs, a full penetration test with a professional report as the final project.</p></div></li>
+      <li class="next"><span class="yr">Next</span><span class="nd"></span><div><h3>SOC analyst role · OSCP</h3><p>Looking for a team to grow with, and working toward OSCP alongside it.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <p class="eyebrow">// contact</p>
+    <h2>Let's talk</h2>
+    <p class="intro">Available now, including nights, weekends and holidays.</p>
+    <div class="mail">
+      <code id="email">liorhandlarsky1412@gmail.com</code>
+      <button class="copy" id="copyBtn" type="button">Copy email</button>
+    </div>
+    <div class="ctas">
+      <a class="btn primary" href="Lior_Handlarsky_SOC_CV.pdf" target="_blank" rel="noopener">Download CV</a>
+      <a class="btn" href="https://www.linkedin.com/in/lior-h-27424b37b/" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/Aperies0" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap"><span>© 2026 Lior Handlarsky</span><span>static site · no trackers · no cookies</span></div>
+</footer>
+
+<script>
+if(matchMedia("(prefers-reduced-motion: reduce)").matches){document.querySelectorAll("video[autoplay]").forEach(function(v){v.removeAttribute("autoplay");v.pause();v.controls=true})}
+document.getElementById("copyBtn").addEventListener("click",function(){
+  var b=this,t=document.getElementById("email").textContent;
+  function ok(){b.textContent="Copied";b.classList.add("ok");setTimeout(function(){b.textContent="Copy email";b.classList.remove("ok")},1500)}
+  function fb(){var r=document.createRange();r.selectNodeContents(document.getElementById("email"));var s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Selected, press Ctrl+C"}
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(ok,fb)}else{fb()}
+});
+</script>
+</body>
+</html>

@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lior Handlarsky · SOC Analyst</title>
-<meta name="description" content="Lior Handlarsky, SOC analyst. Real-world incident investigation, blue-team training, and offensive security tooling.">
+<meta name="description" content="Lior Handlarsky, SOC analyst. Real-world incident investigation, a Wazuh detection-engineering lab, and offensive security tooling.">
 <meta property="og:title" content="Lior Handlarsky · SOC Analyst">
-<meta property="og:description" content="Real-world incident investigation, blue-team training, and offensive security tooling.">
+<meta property="og:description" content="Real-world incident investigation, a Wazuh detection-engineering lab, and offensive security tooling.">
 <meta name="theme-color" content="#0c1110">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: single column, 1080px measure. Hero → case file (signature) → strengths → projects → labs → path → contact. */
+/* Layout: single column, 1080px measure. Hero → case file (signature) → detection lab → strengths → projects → labs → path → contact. */
 :root{
   --bg:#0c1110;        /* green-biased near-black */
   --surface:#121917;
@@ -226,6 +226,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
     <a class="id" href="#top"><b>lior.handlarsky</b> / soc</a>
     <nav aria-label="Sections">
       <a href="#case">Investigation</a>
+      <a href="#detection">Detection lab</a>
       <a href="#projects">Projects</a>
       <a href="#labs">Labs</a>
       <a href="#path">Path</a>
@@ -241,13 +242,13 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
   <div class="status rise"><span class="dot" aria-hidden="true"></span>Open to SOC analyst roles · shift-ready</div>
   <h1 class="rise d1">Lior<br>Handlarsky<span class="cur" aria-hidden="true"></span></h1>
   <p class="role rise d2"><b>SOC Analyst</b> / Blue Team</p>
-  <p class="lede rise d3">I investigated a real phishing and account-takeover attack from first report to final IOC list. <span>Behind that: TryHackMe's SOC Level 1 path, a year of offensive and defensive training at ECOM College, and three years keeping Apache gunships mission-ready in the Israeli Air Force.</span></p>
+  <p class="lede rise d3">I investigated a real phishing and account-takeover attack from first report to final IOC list, and I run a home SOC lab where I attack an AD domain and write the Wazuh rules that catch it. <span>Behind that: TryHackMe's SOC Level 1 path, a year of offensive and defensive training at ECOM College, and three years keeping Apache gunships mission-ready in the Israeli Air Force.</span></p>
   <div class="ctas rise d4">
     <a class="btn primary" href="Lior_Handlarsky_SOC_CV.pdf" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>
       Download CV
     </a>
-    <a class="btn" href="https://www.linkedin.com/in/lior-h-27424b37b/" target="_blank" rel="noopener">
+    <a class="btn" href="https://www.linkedin.com/in/lior-handlarsky/" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.1c.5-1 1.8-2 3.8-2 4 0 4.8 2.6 4.8 6V21h-4v-5.2c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8V21h-4z"/></svg>
       LinkedIn
     </a>
@@ -262,7 +263,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
   </div>
   <div class="facts rise d5">
     <span>TryHackMe SOC Level 1 · completed</span>
-    <span>ECOM College · 2025–2026</span>
+    <span>ECOM College · completed 2026</span>
     <span>IAF Apache squadron · 2022–2025</span>
     <span>Hebrew · English</span>
   </div>
@@ -322,19 +323,65 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
   </div>
 </section>
 
+<section id="detection">
+  <div class="wrap">
+    <p class="eyebrow">// detection lab</p>
+    <h2>Attack it, hunt it, write the rule</h2>
+    <p class="intro">A home SOC lab: Wazuh monitoring a small Active Directory domain. For each technique I run the attack, check what the default ruleset actually catches, and close the gap with my own rule.</p>
+
+    <article class="case" aria-label="Home SOC lab: attack simulation and detection engineering">
+      <div class="case-head">
+        <span class="case-id">LAB-001 · 2026-10</span>
+        <span class="case-title">Wazuh + Active Directory detection lab</span>
+        <span class="tag ok">4 scenarios · 5 custom rules</span>
+        <span class="tag">Next: LSASS, Kerberoasting, DCSync</span>
+      </div>
+      <div class="case-body">
+        <ol class="tl">
+          <li><span class="ph">T1059.001</span><div><h3>Encoded PowerShell</h3><p>Wazuh flagged the encoded launch but discarded the decoded script block. A rule on PowerShell 4104 now alerts on the payload itself, however it was obfuscated.</p></div></li>
+          <li><span class="ph">T1105</span><div><h3>certutil as a downloader</h3><p>Renamed copies were caught; abuse under the real name wasn't. A rule keyed on the PE header's original filename catches both.</p></div></li>
+          <li class="key"><span class="ph">T1547.001</span><div><h3>Run-key persistence</h3><p>Written by PowerShell, it produced no alert at all. Traced it to backslash escaping and a silent built-in rule claiming the event first, then re-parented my rule beneath it. It now fires for any writer and names the process.</p></div></li>
+          <li><span class="ph">T1110.003</span><div><h3>Password spraying</h3><p>The built-in rule needs 8 failures; a 7-account spray slipped under it. A frequency rule counting distinct accounts per source catches the spray without flagging ordinary typos.</p></div></li>
+        </ol>
+        <div class="side">
+          <dl class="kv">
+            <div><dt>Stack</dt><dd>Wazuh 4.14 on Ubuntu · Windows Server 2019 DC · Windows 10 workstation</dd></div>
+            <div><dt>Telemetry</dt><dd>Sysmon, process command lines (4688), PowerShell script blocks (4104), Kerberos &amp; DS auditing via GPO, Defender</dd></div>
+            <div><dt>Also caught</dt><dd>Defender blocked two variants (Commando.A!ml, Ceprolad.A); both alerts landed in Wazuh</dd></div>
+          </dl>
+          <div class="iocs" aria-label="Example alert from the lab">
+            <div class="h"><span>alert.json</span><span>rule 100130</span></div>
+            <div class="row"><span class="t">level</span><span class="red">12</span></div>
+            <div class="row"><span class="t">desc</span><span class="red">Run-key persistence pointing to user-writable path</span></div>
+            <div class="row"><span class="t">image</span><span class="red">…\WindowsPowerShell\v1.0\powershell.exe</span></div>
+            <div class="row"><span class="t">key</span><span class="red">HKU\…\CurrentVersion\Run\SlackHelper</span></div>
+            <div class="row"><span class="t">value</span><span class="red">C:\Users\Public\update.bat</span></div>
+            <div class="row"><span class="t">mitre</span><span class="red">T1547.001</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="case-foot">
+        <span>Full writeup: attack commands, telemetry, rule XML and the debugging behind each rule.</span>
+        <a class="link" href="https://github.com/Aperies0/Pentester-Arsenal/tree/main/Writeups/SOC-Home-Lab" target="_blank" rel="noopener">Read the lab writeup →</a>
+      </div>
+    </article>
+  </div>
+</section>
+
 <section id="strengths">
   <div class="wrap">
     <p class="eyebrow">// what I bring to a SOC</p>
     <h2>Built for the night shift</h2>
     <div class="trio">
       <div><h3>Procedure under pressure</h3><p>Three years as an Armament Crew Chief on AH-64 Apaches. Inspections, troubleshooting and mission prep where a skipped step isn't an option.</p></div>
-      <div><h3>Attacker's view of the alert</h3><p>Offensive training in enumeration, privilege escalation and Active Directory attacks. I know what the next step after an alert usually looks like.</p></div>
+      <div><h3>Attacker's view of the alert</h3><p>Offensive training in enumeration, privilege escalation and Active Directory attacks. In my lab I run those attacks myself, so I know what the next step after an alert usually looks like.</p></div>
       <div><h3>Automates the boring parts</h3><p>Python, Bash and JavaScript tooling of my own. If I do a task twice, I script it the third time.</p></div>
     </div>
     <dl class="skills">
-      <div><dt>SOC / Blue team</dt><dd>Log analysis, alert triage, incident response, SIEM &amp; EDR workflows, IOC extraction, phishing &amp; malicious-domain analysis, threat intel, MITRE ATT&amp;CK</dd></div>
-      <div><dt>Network</dt><dd>TCP/IP, DNS, HTTP/HTTPS, traffic analysis &amp; packet inspection</dd></div>
-      <div><dt>Tools</dt><dd>Wireshark, Burp Suite, Nmap, Metasploit, BloodHound, Hashcat, John the Ripper</dd></div>
+      <div><dt>SOC / Blue team</dt><dd>Log analysis, alert triage, incident response, detection rule writing, IOC extraction, phishing &amp; malicious-domain analysis, threat intel, MITRE ATT&amp;CK</dd></div>
+      <div><dt>SIEM / EDR</dt><dd>Wazuh (custom rules), Splunk (SPL), Elastic / Kibana (KQL), Sysmon, Windows event logging &amp; audit policy, Microsoft Defender</dd></div>
+      <div><dt>Network</dt><dd>TCP/IP, DNS, HTTP/HTTPS, traffic analysis &amp; packet inspection, Snort (IDS)</dd></div>
+      <div><dt>Tools</dt><dd>Wireshark, Burp Suite, Nmap</dd></div>
       <div><dt>Scripting</dt><dd>Python, Bash, PowerShell, JavaScript, API integrations</dd></div>
       <div><dt>Systems</dt><dd>Windows Server, Windows 10/11, Active Directory, Linux (Kali, Debian)</dd></div>
     </dl>
@@ -400,7 +447,8 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
       <li class="done"><span class="yr">2022–25</span><span class="nd"></span><div><h3>Armament Crew Chief, Apache Squadron</h3><p>Israeli Air Force. Weapon-system readiness on AH-64 Apaches.</p></div></li>
       <li class="done"><span class="yr">2025</span><span class="nd"></span><div><h3>Salesperson, Bug Multisystem</h3><p>Matched customers to technology solutions, consistently met targets.</p></div></li>
       <li class="done"><span class="yr">2025</span><span class="nd"></span><div><h3>TryHackMe SOC Level 1</h3><p>Log analysis, SIEM, EDR, phishing analysis, threat intel, forensics basics.</p></div></li>
-      <li class="done"><span class="yr">2025–26</span><span class="nd"></span><div><h3>Cybersecurity course, ECOM College</h3><p>Offensive and defensive security, hands-on labs, a full penetration test with a professional report as the final project.</p></div></li>
+      <li class="done"><span class="yr">2025–26</span><span class="nd"></span><div><h3>Cybersecurity course, ECOM College</h3><p>Completed October 2026. Offensive and defensive security, hands-on labs, a full penetration test with a professional report as the final project.</p></div></li>
+      <li class="done"><span class="yr">2026</span><span class="nd"></span><div><h3>Home SOC lab</h3><p>Wazuh + Active Directory. Attack simulation, threat hunting and custom detection rules mapped to MITRE ATT&amp;CK.</p></div></li>
       <li class="next"><span class="yr">Next</span><span class="nd"></span><div><h3>SOC analyst role · OSCP</h3><p>Looking for a team to grow with, and working toward OSCP alongside it.</p></div></li>
     </ol>
   </div>
@@ -417,7 +465,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
     </div>
     <div class="ctas">
       <a class="btn primary" href="Lior_Handlarsky_SOC_CV.pdf" target="_blank" rel="noopener">Download CV</a>
-      <a class="btn" href="https://www.linkedin.com/in/lior-h-27424b37b/" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://www.linkedin.com/in/lior-handlarsky/" target="_blank" rel="noopener">LinkedIn</a>
       <a class="btn" href="https://github.com/Aperies0" target="_blank" rel="noopener">GitHub</a>
     </div>
   </div>
